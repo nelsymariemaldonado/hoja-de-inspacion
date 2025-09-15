@@ -260,22 +260,3 @@ document.addEventListener("DOMContentLoaded", () => {
   function fileToDataURL(file) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = e => res(e.target.result); r.onerror = rej; r.readAsDataURL(file); }); }
   function scaleToFit(origW, origH, maxW, maxH) { const ratio = Math.min(maxW / origW, maxH / origH); return { w: Math.round(origW * ratio), h: Math.round(origH * ratio) }; }
 });
-const CACHE = "pozo-v1";
-const ASSETS = [
-  "./",
-  "./index.html",
-  "./styles.css",
-  "./script.js",
-  "./Asset 1@4x.png",
-  "./manifest.webmanifest",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png"
-];
-self.addEventListener("install", e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))));
-self.addEventListener("activate", e => e.waitUntil(
-  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
-));
-self.addEventListener("fetch", e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js"));
-}
