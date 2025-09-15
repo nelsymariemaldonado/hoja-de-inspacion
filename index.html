@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hoja de Inspección </title>
+  <link rel="stylesheet" href="styles.css"/>
+  <!-- jsPDF para exportar a PDF -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+  <link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#006837">
+<link rel="icon" href="icons/icon-192.png">
+<body>
+  <header>
+    <img src="Asset 1@4x.png" alt="Logo EC Waste" class="logo" />
+    <h1>Hoja de Inspección</h1>
+  </header>
+
+  <form id="inspectionForm">
+    <section>
+      <h2>Datos Generales</h2>
+
+      <div class="fecha-hora">
+        <label>Fecha de Inspección:
+          <input type="date" name="fecha"/>
+        </label>
+        <label>Hora de Inspección:
+          <input type="time" name="hora"/>
+        </label>
+      </div>
+
+      <label>Nombre del Inspector:
+        <input type="text" name="inspector" id="inspector" placeholder="Escriba el nombre completo"/>
+      </label>
+
+      <label>ID o # de Pozo:
+        <input type="text" name="pozoId"/>
+      </label>
+
+      <!-- MODO DE COORDENADAS -->
+      <div class="gps-row">
+        <div class="gps-modes">
+          <span class="gps-title">Coordenadas GPS:</span>
+          <label class="chip">
+            <input type="radio" name="gpsMode" value="auto" id="gpsModeAuto" checked>
+            Automáticas
+          </label>
+          <label class="chip">
+            <input type="radio" name="gpsMode" value="manual" id="gpsModeManual">
+            Manuales
+          </label>
+        </div>
+
+        <div class="gps-inputs">
+          <input type="text" name="gps" id="gps" readonly placeholder="Obteniendo ubicación..."/>
+          <button type="button" id="btnCaptureGPS" class="btn-outline">📍 Capturar GPS</button>
+        </div>
+        <small class="help">Formato decimal: latitud, longitud (ej. 18.123456, -66.123456)</small>
+      </div>
+
+      <label>Condiciones Climáticas:
+        <select name="clima">
+          <option>Soleado</option>
+          <option>Nublado</option>
+          <option>Lluvia</option>
+          <option>Otro</option>
+        </select>
+      </label>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>1. Estructura del Pozo</h2>
+        <button type="button" class="btn-mini clear-section" data-section="estructura">Limpiar sección</button>
+      </div>
+      <div class="items">
+        <div class="item">
+          <label>Tubería vertical visible</label>
+          <div class="radios" data-item="tuberia"></div>
+        </div>
+        <div class="item">
+          <label>Tapón o cabezal</label>
+          <div class="radios" data-item="tapon"></div>
+        </div>
+        <div class="item">
+          <label>Fernco</label>
+          <div class="radios" data-item="fernco"></div>
+        </div>
+        <div class="item">
+          <label>Soldaduras o uniones</label>
+          <div class="radios" data-item="soldaduras"></div>
+        </div>
+        <div class="item">
+          <label>Mangas de gas</label>
+          <div class="radios" data-item="mangasGas"></div>
+        </div>
+        <div class="item">
+          <label>Sample port</label>
+          <div class="radios" data-item="samplePort"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>2. Sistema de Captación</h2>
+        <button type="button" class="btn-mini clear-section" data-section="captacion">Limpiar sección</button>
+      </div>
+      <div class="items">
+        <div class="item">
+          <label>Válvula de gas</label>
+          <div class="radios" data-item="valvulaGas"></div>
+        </div>
+        <div class="item">
+          <label>Tuberías conexión lateral</label>
+          <div class="radios" data-item="conexionLateral"></div>
+        </div>
+        <div class="item">
+          <label>Presencia de condensado</label>
+          <div class="radios" data-item="condensado"></div>
+        </div>
+        <div class="item">
+          <label>Presencia de azufre</label>
+          <div class="radios" data-item="azufre"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>3. Área Circundante</h2>
+        <button type="button" class="btn-mini clear-section" data-section="circundante">Limpiar sección</button>
+      </div>
+      <div class="items">
+        <div class="item">
+          <label>Acumulación de lixiviados</label>
+          <div class="radios" data-item="lixiviados"></div>
+        </div>
+        <div class="item">
+          <label>Presencia de erosión</label>
+          <div class="radios" data-item="erosion"></div>
+        </div>
+        <div class="item">
+          <label>Vegetación excesiva</label>
+          <div class="radios" data-item="vegetacion"></div>
+        </div>
+        <div class="item">
+          <label>Accesibilidad al pozo</label>
+          <div class="radios" data-item="accesibilidad"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fotografías -->
+    <section>
+      <h2>5. Fotografías</h2>
+      <p class="help">Puedes tomar fotos con la cámara o seleccionar desde la galería (múltiples).</p>
+      <div class="foto-controles">
+        <label class="btn-file">
+          📷 Tomar/Agregar fotos
+          <input type="file" id="photos" accept="image/*" capture="environment" multiple />
+        </label>
+        <button type="button" id="clearPhotos" class="btn-outline">Eliminar todas</button>
+      </div>
+      <div id="photoPreview" class="gallery"></div>
+    </section>
+
+    <section>
+      <h2>4. Observaciones</h2>
+      <textarea name="observaciones" rows="4" placeholder="Escriba observaciones adicionales..."></textarea>
+    </section>
+
+    <!-- Acciones Correctivas (tabla dinámica) -->
+    <section>
+      <div class="section-head">
+        <h2>5. Acciones Correctivas</h2>
+        <button type="button" class="btn-mini" id="addRow">➕ Agregar acción</button>
+      </div>
+      <table id="accionesTable">
+        <thead>
+          <tr>
+            <th>Acción</th>
+            <th>Responsable</th>
+            <th>Prioridad</th>
+            <th>Fecha sugerida</th>
+            <th>Eliminar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="text" name="accion[]"></td>
+            <td><input type="text" name="responsable[]"></td>
+            <td>
+              <select name="prioridad[]">
+                <option>Alta</option>
+                <option>Media</option>
+                <option>Baja</option>
+              </select>
+            </td>
+            <td><input type="date" name="fechaAccion[]"></td>
+            <td><button type="button" class="removeRow">✖</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Firmas</h2>
+      <label>Firma del Inspector: <input type="text" name="firmaInspector"/></label>
+      <label>Firma del Supervisor: <input type="text" name="firmaSupervisor"/></label>
+    </section>
+
+    <div class="acciones">
+      <button type="submit">Enviar</button>
+      <button type="button" id="btnEmail">Enviar por Email</button>
+      <button type="button" id="btnPDF">Exportar a PDF</button>
+      <button type="button" id="btnPrint">Imprimir</button>
+      <button type="button" id="btnLimpiarTodo" class="btn-outline">Limpiar Todo</button>
+    </div>
+  </form>
+</body>
+</html>
